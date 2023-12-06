@@ -56,11 +56,17 @@ namespace Domain.Entities
 
         public void When(InviteWasDeclined @event)
         {
-            //TODO:Deve ser possível rejeitar um convite já aceito antes.
-            //Se este for o caso, a quantidade de comida calculada pelo aceite anterior do convite
-            //deve ser retirado da lista de compras do churrasco.
-            //Se ao rejeitar, o número de pessoas confirmadas no churrasco for menor que sete,
-            //o churrasco deverá ter seu status atualizado para “Pendente de confirmações”. 
+            AcceptCount--;
+            if (AcceptCount == 6)
+                Status = BbqStatus.PendingConfirmations;
+
+            if (@event.IsVeg)
+                BuyList["Vegetables"] -= VEGAN_VEGETABLE_COUNT;
+            else
+            {
+                BuyList["Vegetables"] -= NORMAL_VEGETABLE_COUNT;
+                BuyList["Meat"] -= NORMAL_MEAT_COUNT;
+            }
         }
 
         public object TakeSnapshot()
