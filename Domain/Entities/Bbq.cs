@@ -42,7 +42,7 @@ namespace Domain.Entities
         public void When(InviteWasAccepted @event)
         {
             AcceptCount++;
-            if (AcceptCount == 7)
+            if (AcceptCount >= 7)
                 Status = BbqStatus.Confirmed;
 
             if (@event.IsVeg)
@@ -57,7 +57,7 @@ namespace Domain.Entities
         public void When(InviteWasDeclined @event)
         {
             AcceptCount--;
-            if (AcceptCount == 6)
+            if (AcceptCount < 7)
                 Status = BbqStatus.PendingConfirmations;
 
             if (@event.IsVeg)
