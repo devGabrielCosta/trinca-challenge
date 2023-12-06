@@ -28,8 +28,11 @@ namespace Serverless_Api
             if (person == null)
                return req.CreateResponse(System.Net.HttpStatusCode.NoContent);
 
-            if(person.Invites.FirstOrDefault(x => x.Id == inviteId) == null)
+            var invite = person.Invites.FirstOrDefault(x => x.Id == inviteId);
+            if (invite == null)
                return await req.CreateResponse(HttpStatusCode.BadRequest, "not invited for this bbq");
+            if (invite.Status == InviteStatus.Accepted)
+                return await req.CreateResponse(HttpStatusCode.BadRequest, "invite already accepted");
 
             var inviteAccepted = new InviteWasAccepted { InviteId = inviteId, IsVeg = input.IsVeg, PersonId = person.Id };
             await _personService.InviteAcceptedAsync(person, inviteAccepted);

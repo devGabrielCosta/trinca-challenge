@@ -4,24 +4,24 @@ using Domain.Services.Interfaces;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 
-namespace Serverless_Api.Functions.BuyList.GetBuyList
+namespace Serverless_Api.Functions.ShoppingList.GetShoppingList
 {
-    public class RunGetBuyList
+    public class RunGetShoppingList
     {
         private readonly Person _user;
         private readonly IBbqService _bbqService;
         private readonly IPersonService _personService;
-        public RunGetBuyList(IBbqService bbqService, IPersonService personService, Person user)
+        public RunGetShoppingList(IBbqService bbqService, IPersonService personService, Person user)
         {
             _user = user;
             _bbqService = bbqService;
             _personService = personService;
         }
 
-        [Function(nameof(RunGetBuyList))]
+        [Function(nameof(RunGetShoppingList))]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = "listaCompras")] HttpRequestData req)
         {
-            var input = await req.Body<GetBuyListRequest>();
+            var input = await req.Body<GetShoppingListRequest>();
             if (input == null)
                 return await req.CreateResponse(HttpStatusCode.BadRequest, "input is required");
 
@@ -30,16 +30,16 @@ namespace Serverless_Api.Functions.BuyList.GetBuyList
             if (!person.IsCoOwner)
                 return req.CreateResponse(HttpStatusCode.Unauthorized);
 
-            var bbqs = await _bbqService.GetDynamicAsync(person.Id, input.Id, input.BuyList);
-            return await req.CreateResponse(HttpStatusCode.Created, ConvertBuyListWeigth(bbqs));
+            var bbqs = await _bbqService.GetDynamicAsync(person.Id, input.Id, input.ShoppingList);
+            return await req.CreateResponse(HttpStatusCode.Created, ConvertShoppingListWeigth(bbqs));
         }
 
-        private IEnumerable<object> ConvertBuyListWeigth(IEnumerable<Bbq> bbqs)
+        private IEnumerable<object> ConvertShoppingListWeigth(IEnumerable<Bbq> bbqs)
         {
             foreach (var bbq in bbqs)
                 yield return new {
                     Id = bbq.Id,
-                    BuyList = bbq.BuyList
+                    ShoppingList = bbq.ShoppingList
                         .Select(
                             x => new {
                                 x.Key,

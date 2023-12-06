@@ -28,7 +28,7 @@ namespace Domain.Services
         //Eu também normalmente não colocaria isso aqui por linq e sim na consulta do banco de dados pelo repositorio
         //mas não encontrei uma forma de fazer isso sem passar por cima da interface de IEventStore utilizada na definição das dependências
         //E a forma como o banco fica estruturado também dificulta essa outra abordagem
-        public async Task<IEnumerable<Bbq>> GetDynamicAsync(string personId, string? id = null, Dictionary<string, int>? buyList = null)
+        public async Task<IEnumerable<Bbq>> GetDynamicAsync(string personId, string? id = null, Dictionary<string, int>? shoppingList = null)
         {        
             var bbqs = new List<Bbq>();
 
@@ -48,9 +48,13 @@ namespace Domain.Services
                 }
             }
                
-            var filtredBbqs = bbqs.Where(i => i.Date > DateTime.Now);
-            if (buyList != null)
-                filtredBbqs = filtredBbqs.Where(i => i.BuyList == buyList).ToList();
+            var filtredBbqs = bbqs.Where(i => i.Date > DateTime.Now && i.Status != BbqStatus.ItsNotGonnaHappen);
+            if (shoppingList != null)
+                filtredBbqs = filtredBbqs.Where(
+                    i => i.ShoppingList.Keys.All(
+                        key => shoppingList.ContainsKey(key) ? shoppingList[key] == i.ShoppingList[key] : true
+                    )
+                );
 
             return filtredBbqs;
         }
@@ -71,7 +75,7 @@ namespace Domain.Services
         }
 
         public async Task ModerateStatusAsync(Bbq bbq)
-        {
+        {   
             if (bbq.Status == BbqStatus.PendingConfirmations)
                 await bbqAccepted(bbq);
             if (bbq.Status == BbqStatus.ItsNotGonnaHappen)

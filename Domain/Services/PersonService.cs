@@ -28,10 +28,12 @@ namespace Domain.Services
         }
         public async Task InviteAcceptedAsync(Person person, InviteWasAccepted inviteResponse)
         {
+            var bbq = await _bbqService.Value.GetAsync(inviteResponse.InviteId);
+            if (bbq?.Status == BbqStatus.ItsNotGonnaHappen)
+                return;
+
             person.Apply(inviteResponse);
             await SaveAsync(person);
-
-            var bbq = await _bbqService.Value.GetAsync(inviteResponse.InviteId);
 
             bbq?.Apply(inviteResponse);
             await _bbqService.Value.SaveAsync(bbq);

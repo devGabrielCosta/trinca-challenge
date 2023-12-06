@@ -11,7 +11,7 @@ namespace Domain.Entities
         public DateTime Date { get; set; }
         public bool IsTrincasPaying { get; set; }
         public int AcceptCount { get; set; }
-        public Dictionary<string, int> BuyList { get; set; }
+        public Dictionary<string, int> ShoppingList { get; set; }
         public const int VEGAN_VEGETABLE_COUNT = 600;
         public const int NORMAL_VEGETABLE_COUNT = 300;
         public const int NORMAL_MEAT_COUNT = 300;
@@ -22,7 +22,7 @@ namespace Domain.Entities
             Reason = @event.Reason;
             Status = BbqStatus.New;
             AcceptCount = 0;
-            BuyList = new Dictionary<string, int> {
+            ShoppingList = new Dictionary<string, int> {
                 { "Meat", 0},
                 { "Vegetables", 0}
             };
@@ -46,11 +46,11 @@ namespace Domain.Entities
                 Status = BbqStatus.Confirmed;
 
             if (@event.IsVeg)
-                BuyList["Vegetables"] += VEGAN_VEGETABLE_COUNT;
+                ShoppingList["Vegetables"] += VEGAN_VEGETABLE_COUNT;
             else
             {
-                BuyList["Vegetables"] += NORMAL_VEGETABLE_COUNT;
-                BuyList["Meat"] += NORMAL_MEAT_COUNT;
+                ShoppingList["Vegetables"] += NORMAL_VEGETABLE_COUNT;
+                ShoppingList["Meat"] += NORMAL_MEAT_COUNT;
             }
         }
 
@@ -61,11 +61,11 @@ namespace Domain.Entities
                 Status = BbqStatus.PendingConfirmations;
 
             if (@event.IsVeg)
-                BuyList["Vegetables"] -= VEGAN_VEGETABLE_COUNT;
+                ShoppingList["Vegetables"] -= VEGAN_VEGETABLE_COUNT;
             else
             {
-                BuyList["Vegetables"] -= NORMAL_VEGETABLE_COUNT;
-                BuyList["Meat"] -= NORMAL_MEAT_COUNT;
+                ShoppingList["Vegetables"] -= NORMAL_VEGETABLE_COUNT;
+                ShoppingList["Meat"] -= NORMAL_MEAT_COUNT;
             }
         }
 
