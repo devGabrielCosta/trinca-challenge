@@ -15,7 +15,7 @@ namespace Domain.Entities
         public const int VEGAN_VEGETABLE_COUNT = 600;
         public const int NORMAL_VEGETABLE_COUNT = 300;
         public const int NORMAL_MEAT_COUNT = 300;
-        public void When(ThereIsSomeoneElseInTheMood @event)
+        private void When(ThereIsSomeoneElseInTheMood @event)
         {
             Id = @event.Id.ToString();
             Date = @event.Date;
@@ -28,7 +28,7 @@ namespace Domain.Entities
             };
         }
 
-        public void When(BbqStatusUpdated @event)
+        private void When(BbqStatusUpdated @event)
         {
             if (@event.GonnaHappen)
                 Status = BbqStatus.PendingConfirmations;
@@ -39,7 +39,7 @@ namespace Domain.Entities
                 IsTrincasPaying = true;
         }
 
-        public void When(InviteWasAccepted @event)
+        private void When(InviteWasAccepted @event)
         {
             AcceptCount++;
             if (AcceptCount >= 7)
@@ -54,7 +54,7 @@ namespace Domain.Entities
             }
         }
 
-        public void When(InviteWasDeclined @event)
+        private void When(InviteWasDeclined @event)
         {
             AcceptCount--;
             if (AcceptCount < 7)

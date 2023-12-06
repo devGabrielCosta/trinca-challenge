@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.CSharp.RuntimeBinder;
 using System.Runtime.ExceptionServices;
+using System.Reflection;
 
 namespace Domain
 {
@@ -35,7 +36,14 @@ namespace Domain
         {
             try
             {
-                ((dynamic)this).When((dynamic)@event);
+                this.GetType()
+                    .InvokeMember(
+                        "When", 
+                        BindingFlags.InvokeMethod | BindingFlags.NonPublic | BindingFlags.Instance, 
+                        null, 
+                        this, 
+                        new[]{ @event }
+                    );
             }
             catch (RuntimeBinderException ex)
             {
