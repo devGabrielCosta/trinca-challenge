@@ -1,9 +1,9 @@
-
+Não implementei alguns desses para não sair da estrutura inicial disponibilizada, os requisitos parecem bem claro no que querem avaliar.
 # Pontos importantes:
   - Por implementar services na camada de domínio seria necessário alguma implementação de notificação para retornar mais especificamente para a api porque alguma requisição deu errada. Algumas travas que eu acabei colocando estão meio fora do local correto pra poder dar uma resposta mais especifica na hora de testar. Para validação das entidades seria ainda mais necessário esta implementação.
   - Ainda sobre o service, em vez de implementar métodos como "BbqService.ModerateStatusAsync" poderia ter seguido o mesmo padrão de evento das entidades e feito algo como "UpdateAsync(bbq, @event)" e especificar uma nova assinatura para cada evento necessário, padronizando ainda mais e acabando de retirar a necessidade de disparar "Apply" fora da camada de dominio como fiz em alguns runFunctions.
   - Em vez de perguntar se a pessoa é vegana, eu também teria deixado isso salvo no próprio usuário, teria faciliado os endpoints de aceite e recusa, e quando uma pessoa cancelasse não seria necessário perguntar novamente se ela é ou não.
-  - Como é fixo apenas carnes e vegetais eu teria feito apenas variáveis para controlar isso, mas como no exercicio pede lista, tentei implementando um dictionary, e com pouco esforço seria possivel adicionar itens dinamicamente. Ou trocar para um Enumerable com uma classe específica de item.
+  - Como é fixo apenas carnes e vegetais eu teria feito apenas variáveis para controlar isso, mas como no exercicio pede lista, tentei implementando um dictionary, e com pouco esforço seria possivel adicionar itens dinamicamente. Seria possível também trocar para um Enumerable com uma classe específica de item.
   - Não tem muita especificação sobre impedir o uso de endpoints então tomei a liberdade de bloquear alguns que atrapalhavam a execução das regras, como aceitar um mesmo convite varias vezes, ou a moderação repetidas vezes de um mesmo evento (O que deixou mais evidente a questão das notificações).
     - Daria por exemplo para ter permitido moderar mais de uma vez para aceito, e voltar os status corretos para os convites. 
   
@@ -15,7 +15,7 @@
 <br/>
 <br/>
 
-## Deixei um comentário no metodo referente a lista de compras. <br/>Não entendi muito bem o requisito, mas acredito ter cumprido o necessário também
+## Deixei um comentário no metodo GetDynamicAsync referente a lista de compras. <br/>Não entendi muito bem o requisito, mas acredito ter cumprido o necessário também
 
 #### "Deve ser possível ver a lista de compras informando a quantidade de carne e vegetais que devem ser comprados. A quantidade deve ser exibida em quilos. 👎🏽"
 
