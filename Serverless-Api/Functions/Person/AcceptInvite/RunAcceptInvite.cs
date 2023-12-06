@@ -3,17 +3,20 @@ using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using System.Linq;
 
 namespace Serverless_Api
 {
     public partial class RunAcceptInvite
     {
         private readonly Person _user;
-        private readonly IPersonRepository _repository;
-        public RunAcceptInvite(IPersonRepository repository, Person user)
+        private readonly IPersonRepository _personRepository;
+        private readonly IBbqRepository _bbqRepository;
+        public RunAcceptInvite(IPersonRepository personRepository, IBbqRepository bbqRepository, Person user)
         {
             _user = user;
-           _repository = repository;
+            _personRepository = personRepository;
+            _bbqRepository = bbqRepository;
         }
 
         [Function(nameof(RunAcceptInvite))]
@@ -21,14 +24,15 @@ namespace Serverless_Api
         {
             var answer = await req.Body<InviteAnswer>();
 
-            var person = await _repository.GetAsync(_user.Id);
-           
-            person.Apply(new InviteWasAccepted { InviteId = inviteId, IsVeg = answer.IsVeg, PersonId = person.Id });
+            var person = await _personRepository.GetAsync(_user.Id);
 
-            await _repository.SaveAsync(person);
+            var inviteAccepted = new InviteWasAccepted { InviteId = inviteId, IsVeg = answer.IsVeg, PersonId = person.Id };
+            person.Apply(inviteAccepted);
+            await _personRepository.SaveAsync(person);
 
-            //implementar efeito do aceite do convite no churrasco
-            //quando tiver 7 pessoas ele está confirmado
+            var bbq = await _bbqRepository.GetAsync(person.Invites.First(x => x.Id == inviteId).Id);
+            bbq.Apply(inviteAccepted);
+            await _bbqRepository.SaveAsync(bbq);
 
             return await req.CreateResponse(System.Net.HttpStatusCode.OK, person.TakeSnapshot());
         }
