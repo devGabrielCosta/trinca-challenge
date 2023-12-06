@@ -1,9 +1,11 @@
 
 # Pontos importantes:
   - Por implementar services na camada de domínio seria necessário alguma implementação de notificação para retornar mais especificamente para a api porque alguma requisição deu errada. Algumas travas que eu acabei colocando estão meio fora do local correto pra poder dar uma resposta mais especifica na hora de testar. Para validação das entidades seria ainda mais necessário esta implementação.
+  - Em vez de perguntar se a pessoa é vegana, eu também teria deixado isso salvo no próprio usuário, teria faciliado os endpoints de aceite e recusa, e quando uma pessoa cancelasse não seria necessário perguntar novamente se ela é ou não.
   - Como é fixo apenas carnes e vegetais eu teria feito apenas variáveis para controlar isso, mas como no exercicio pede lista, tentei implementando um dictionary, e com pouco esforço seria possivel adicionar itens dinamicamente. Ou trocar para um Enumerable com uma classe específica de item.
   - Não tem muita especificação sobre impedir o uso de endpoints então tomei a liberdade de bloquear alguns que atrapalhavam a execução das regras, como aceitar um mesmo convite varias vezes, ou a moderação repetidas vezes de um mesmo evento (O que deixou mais evidente a questão das notificações).
-    - Daria por exemplo para ter permitido moderar mais de uma vez para aceito, e voltar os status corretos para os convites.
+    - Daria por exemplo para ter permitido moderar mais de uma vez para aceito, e voltar os status corretos para os convites. 
+  
 
 <br/>
 <br/>
