@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "be76598e-3d07-46c2-baae-6b5f8e6f10a3",
+		"_postman_id": "0b5359b6-321d-4a79-a500-9535c12b50e7",
 		"name": "Desafio técnico",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "19509065"
+		"_exporter_id": "31619414"
 	},
 	"item": [
 		{
@@ -225,6 +225,44 @@
 						"invites",
 						"3d9702aa-6f1c-437c-a3ad-bd6c1daea143",
 						"decline"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lista de Compras",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "personId",
+						"value": "{{moderador-1}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"BuyList\": {\r\n            \"Meat\": 300,\r\n            \"Vegetables\": 300\r\n        }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7296/api/listaCompras",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7296",
+					"path": [
+						"api",
+						"listaCompras"
 					]
 				}
 			},
