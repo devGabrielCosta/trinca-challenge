@@ -9,6 +9,8 @@ using Domain.Repositories;
 using Microsoft.Azure.Cosmos;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
+using Domain.Services.Interfaces;
+using Domain.Services;
 
 namespace Domain
 {
@@ -56,6 +58,10 @@ namespace Domain
 
             services.AddSingleton<IEventStore<Bbq>>(bbqStore);
             services.AddSingleton<IEventStore<Person>>(peopleStore);
+            services.AddSingleton<IBbqService, BbqService>();
+            services.AddTransient<Lazy<IBbqService>>(provider => new Lazy<IBbqService>(provider.GetService<IBbqService>));
+            services.AddSingleton<IPersonService, PersonService>();
+            services.AddTransient<Lazy<IPersonService>>(provider => new Lazy<IPersonService>(provider.GetService<IPersonService>));
 
             return services;
         }
