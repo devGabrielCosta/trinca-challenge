@@ -29,19 +29,40 @@ namespace Serverless_Api
 
             bbq.Apply(new BbqStatusUpdated(moderationRequest.GonnaHappen, moderationRequest.TrincaWillPay));
 
+            if (moderationRequest.GonnaHappen)
+                await bbqAccepted(bbq);
+            else
+                await bbqRejected(bbq);
+
+            await _repository.SaveAsync(bbq);
+
+            return await req.CreateResponse(System.Net.HttpStatusCode.OK, bbq.TakeSnapshot());
+        }
+
+        private async Task bbqAccepted(Bbq bbq)
+        {
             var lookups = await _snapshots.AsQueryable<Lookups>("Lookups").SingleOrDefaultAsync();
 
-            foreach (var personId in lookups.PeopleIds)
+            foreach (var personId in lookups.PeopleIds.Except(lookups.ModeratorIds))
             {
                 var person = await _persons.GetAsync(personId);
                 var @event = new PersonHasBeenInvitedToBbq(bbq.Id, bbq.Date, bbq.Reason);
                 person.Apply(@event);
                 await _persons.SaveAsync(person);
             }
+        }
 
-            await _repository.SaveAsync(bbq);
+        private async Task bbqRejected(Bbq bbq)
+        {
+            var lookups = await _snapshots.AsQueryable<Lookups>("Lookups").SingleOrDefaultAsync();
 
-            return await req.CreateResponse(System.Net.HttpStatusCode.OK, bbq.TakeSnapshot());
+            foreach (var personId in lookups.PeopleIds)
+            {
+                var person = await _persons.GetAsync(personId);
+                var @event = new InviteWasDeclined { InviteId = bbq.Id, PersonId = personId };
+                person.Apply(@event);
+                await _persons.SaveAsync(person);
+            }
         }
     }
 }
