@@ -30,7 +30,7 @@ namespace Serverless_Api
             person.Apply(inviteAccepted);
             await _personRepository.SaveAsync(person);
 
-            var bbq = await _bbqRepository.GetAsync(person.Invites.First(x => x.Id == inviteId).Id);
+            var bbq = await _bbqRepository.GetAsync(inviteId);
             bbq.Apply(inviteAccepted);
             await _bbqRepository.SaveAsync(bbq);
 
